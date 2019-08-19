@@ -28,7 +28,7 @@
   CGContextFillRect(context, self.bounds);
   
   // make a hole for the scanner
-  CGRect holeRect = [self scanRect];
+  CGRect holeRect = [self scanRectSize];
   CGRect holeRectIntersection = CGRectIntersection( holeRect, rect );
   [[UIColor clearColor] setFill];
   UIRectFill(holeRectIntersection);
@@ -82,10 +82,10 @@
     [self.layer removeAnimationForKey:@"flashAnimation"];
   }
   
-  - (CGRect)scanRect {
+  - (CGRect)scanRectSize {
     CGRect rect = self.frame;
-    CGFloat heightMultiplier = 3.0/4.0; // 4:3 aspect ratio
-    CGFloat scanRectWidth = rect.size.width * 0.8f;
+    CGFloat heightMultiplier = 3.0/3.0; // 4:3 aspect ratio
+    CGFloat scanRectWidth = rect.size.width * 0.7f;
     CGFloat scanRectHeight = scanRectWidth * heightMultiplier;
     CGFloat scanRectOriginX = (rect.size.width / 2) - (scanRectWidth / 2);
     CGFloat scanRectOriginY = (rect.size.height / 2) - (scanRectHeight / 2);
@@ -93,7 +93,7 @@
   }
   
   - (CGRect)scanLineRect {
-    CGRect scanRect = [self scanRect];
+    CGRect scanRect = [self scanRectSize];
     CGRect rect = self.frame;
     return CGRectMake(scanRect.origin.x, rect.size.height / 2, scanRect.size.width, 1);
   }

@@ -40,7 +40,9 @@
                              options:NSLayoutFormatAlignAllBottom
                              metrics:nil
                              views:@{@"scanRect": _scanRect}]];
-  [_scanRect startAnimating];
+   
+    
+
     self.scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
   [self updateFlashButton];
@@ -48,6 +50,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    [_scanRect startAnimating];
+    
     if (self.scanner.isScanning) {
         [self.scanner stopScanning];
     }
@@ -71,6 +76,12 @@
 
 - (void)startScan {
     NSError *error;
+    __weak typeof(self) weakSelf = self;
+    self.scanner.didStartScanningBlock = ^(){
+         __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.scanner.scanRect = [strongSelf.scanRect scanRectSize];
+    };
+    
     [self.scanner startScanningWithResultBlock:^(NSArray<AVMetadataMachineReadableCodeObject *> *codes) {
         [self.scanner stopScanning];
          AVMetadataMachineReadableCodeObject *code = codes.firstObject;
@@ -91,11 +102,11 @@
         return;
     }
     if (self.isFlashOn) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flash Off"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"开灯"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self action:@selector(toggle)];
     } else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Flash On"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"关灯"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self action:@selector(toggle)];
     }
